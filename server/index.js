@@ -5,8 +5,8 @@ const axios = require("axios");
 const app = express();
 const port = process.env.SERVER_PORT || 3001;
 const targetUrl =
-  process.env.REDASH_URL || "https://redash-e-katalog.lkpp.go.id";
-const redashKey = process.env.REDASH_API_KEY;
+  process.env.VITE_APP_REDASH_URL || "https://redash-e-katalog.lkpp.go.id";
+const redashKey = process.env.VITE_APP_REDASH_API_KEY;
 
 // Middleware untuk parsing body JSON
 app.use(express.json());
