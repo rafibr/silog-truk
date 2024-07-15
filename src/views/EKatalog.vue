@@ -7,7 +7,7 @@ import { VCard, VInput, VSlideGroupItem, VTabs, VTabsWindowItem, VTextField } fr
 
 const tab = ref(0);
 
-const server = import.meta.env.VITE_APP_URL + ":" + import.meta.env.VITE_APP_SERVER_PORT;
+const server = import.meta.env.VITE_APP_URL + (import.meta.env.VITE_APP_SERVER_PORT ? `:${import.meta.env.VITE_APP_SERVER_PORT}` : '');
 const apiUrl = (apiCode) => {
   return `${server}/api/queries/${apiCode}/results`;
 }
