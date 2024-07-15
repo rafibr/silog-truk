@@ -8,6 +8,11 @@ import { VCard, VInput, VSlideGroupItem, VTabs, VTabsWindowItem, VTextField } fr
 const tab = ref(0);
 
 const server = import.meta.env.VITE_APP_URL + (import.meta.env.VITE_APP_SERVER_PORT ? `:${import.meta.env.VITE_APP_SERVER_PORT}` : '');
+const headers = {
+  Authorization: `Key ${import.meta.env.VITE_APP_REDASH_API_KEY}`,
+  "Content-Type": "application/json",
+};
+
 const apiUrl = (apiCode) => {
   return `${server}/api/queries/${apiCode}/results`;
 }
@@ -35,7 +40,6 @@ const params = {
 };
 
 const getDataPurchasing = () => {
-  alert(server);
   isTablePurchasingLoading.value = true;
 
   //flips the date if the start date is greater than the end date
@@ -54,7 +58,7 @@ const getDataPurchasing = () => {
   axios.post(apiUrl(apiList.find(x => x.key === 'transaksi_purchasing').code), {
     queryId: apiList.find(x => x.key === 'transaksi_purchasing').code,
     parameters: params
-  })
+  }, { headers })
     .then(response => {
       isTablePurchasingLoading.value = false;
       const responseData = response.data.query_result.data;

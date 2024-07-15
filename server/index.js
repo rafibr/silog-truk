@@ -3,7 +3,7 @@ const cors = require("cors");
 const axios = require("axios");
 
 const app = express();
-const port = process.env.SERVER_PORT || 3001;
+const port = process.env.VITE_SERVER_PORT || 3001;
 const targetUrl =
   process.env.VITE_APP_REDASH_URL || "https://redash-e-katalog.lkpp.go.id";
 const redashKey = process.env.VITE_APP_REDASH_API_KEY;
