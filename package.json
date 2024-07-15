@@ -1,0 +1,35 @@
+{
+  "name": "silog-truk",
+  "version": "0.0.0",
+  "scripts": {
+    "dev:backend": "bun --watch server/index.js",
+    "dev:frontend": "vite",
+    "dev": "concurrently \"bun dev:backend\" \"bun dev:frontend\"",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.22",
+    "@heroicons/vue": "^2.1.5",
+    "@jobinsjp/vue3-datatable": "^1.0.15",
+    "@mdi/font": "7.4.47",
+    "axios": "^1.7.2",
+    "concurrently": "^8.2.2",
+    "roboto-fontface": "*",
+    "vue": "^3.4.31",
+    "vue-router": "^4.4.0",
+    "vue3-easy-data-table": "^1.5.47",
+    "vuetify": "^3.6.11"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "sass": "1.77.6",
+    "tailwindcss": "^3.4.4",
+    "unplugin-fonts": "^1.1.1",
+    "unplugin-vue-components": "^0.27.2",
+    "vite": "^5.3.3",
+    "vite-plugin-vuetify": "^2.0.3"
+  }
+}
