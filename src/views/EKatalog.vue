@@ -7,7 +7,7 @@ import { VCard, VInput, VSlideGroupItem, VTabs, VTabsWindowItem, VTextField } fr
 
 const tab = ref(0);
 
-const server = s
+const server = import.meta.env.VITE_APP_URL + ":" + import.meta.env.VITE_APP_SERVER_PORT;
 const apiUrl = (apiCode) => {
   return `${server}/api/queries/${apiCode}/results`;
 }
@@ -35,6 +35,7 @@ const params = {
 };
 
 const getDataPurchasing = () => {
+  alert(server);
   isTablePurchasingLoading.value = true;
 
   //flips the date if the start date is greater than the end date
@@ -124,9 +125,8 @@ watch([startDate, endDate], () => {
             </VTextField>
 
             <EasyDataTable :headers="headersDetilEPurchasing" :items="itemsPurchasing"
-              :search-field="searchFieldPurchasing" buttons-pagination
-              :search-value="searchValuePurchasing" :rows-per-page="5"
-              :loading="isTablePurchasingLoading">
+              :search-field="searchFieldPurchasing" buttons-pagination :search-value="searchValuePurchasing"
+              :rows-per-page="5" :loading="isTablePurchasingLoading">
               <template #loading>
                 <img src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
                   style="width: 100px; height: 80px;" />
