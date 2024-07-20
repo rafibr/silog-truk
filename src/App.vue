@@ -99,8 +99,13 @@ const navigation = ref(
       </div>
     </div>
     <div class="shadow-xl">
-      <VNavigationDrawer v-model="mobileMenuOpen" class="shadow-lg" width="250">
-        <div class="h-full bg-gradient-to-b from-green-500 to-yellow-100">
+      <VNavigationDrawer
+        v-model="mobileMenuOpen"
+        class="shadow-lg"
+        width="250"
+        floating
+      >
+        <div class="h-full bg-gradient-to-b from-green-500 to-blue-400">
           <div class="flex flex-row items-center h-14 gap-2 px-2">
             <!-- image -->
             <img
