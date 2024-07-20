@@ -74,6 +74,8 @@ app.get("*", (req, res) => {
   res.send("You are trying to access an invalid route");
 });
 
+app.use(express.static("dist"));
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
