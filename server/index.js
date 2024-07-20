@@ -20,9 +20,12 @@ app.use("/api", (req, res) => {
   const headers = {
     Authorization: `Key ${redashKey}`,
     "Content-Type": "application/json",
+    // add referer header to avoid CORS issue
+    Referer: targetUrl,
   };
 
   console.log(`Request to ${url} with method ${req.method}`);
+
 
   axios({
     method: req.method,
