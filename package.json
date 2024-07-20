@@ -2,7 +2,7 @@
   "name": "silog-truk",
   "version": "0.0.0",
   "scripts": {
-    "dev:backend": "bun --watch server/index.js",
+    "dev:backend": "bun server/index.js",
     "dev:frontend": "vite",
     "dev": "bun dev:backend",
     "build": "vite build",

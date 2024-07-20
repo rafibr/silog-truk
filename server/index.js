@@ -41,7 +41,7 @@ app.use("/api", (req, res) => {
 
 app.get('/', (req, res) => {
   console.log(process.cwd() + '../dist/index.html');
-  res.sendFile(process.cwd() + '/dist/index.html');
+  res.sendFile(process.cwd() + '../dist/index.html');
 });
 
 app.listen(port, () => {
