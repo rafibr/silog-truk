@@ -4,7 +4,7 @@
   "scripts": {
     "dev:backend": "bun --watch server/index.js",
     "dev:frontend": "vite",
-    "dev": "concurrently \"bun install\" \"bun dev:backend\"",
+    "dev": "bun dev:backend",
     "build": "vite build",
     "preview": "vite preview"
   },
