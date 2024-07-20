@@ -40,4 +40,11 @@ export default defineConfig({
       '.vue',
     ],
   },
+  server: {
+	proxy: {	
+		'/api': {
+			target: '/api',
+		}
+	},
+  },
 })
