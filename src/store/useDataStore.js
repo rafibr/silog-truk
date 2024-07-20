@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { defineStore } from 'pinia'
+import { useRoute } from 'vue-router';
 
 export const useDataStore = defineStore({
   id: 'data',

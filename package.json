@@ -4,7 +4,7 @@
   "scripts": {
     "dev:backend": "bun --watch server/index.js",
     "dev:frontend": "vite",
-    "dev": "concurrently \"bun dev:backend\" \"bun dev:frontend\"",
+    "dev": "bun dev:backend",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -15,6 +15,7 @@
     "@mdi/font": "^7.4.47",
     "axios": "^1.7.2",
     "concurrently": "^8.2.2",
+    "path": "^0.12.7",
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
