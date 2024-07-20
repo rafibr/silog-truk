@@ -4,7 +4,7 @@
 <template>
   <!-- background from image -->
   <div
-    class="flex flex-col lg:items-center md:h-screen items-center p-8 bg-[url('@/assets/background.jpg')] bg-center bg-no-repeat bg-cover md:justify-center"
+    class="flex flex-col xl:flex-row lg:items-center h-full items-center p-8 bg-[url('@/assets/background.jpg')] bg-center bg-no-repeat bg-cover md:justify-center"
   >
     <div
       class="lg:order-1 overflow-ellipsis backdrop-blur-sm bg-white/20 rounded-lg p-8 shadow-lg"
