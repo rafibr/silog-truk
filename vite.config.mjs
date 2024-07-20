@@ -40,11 +40,4 @@ export default defineConfig({
       '.vue',
     ],
   },
-  server: {
-	proxy: {	
-		'/api': {
-			target: 'https://apisilog-truk.netlify.app',
-		}
-	},
-  },
 })
