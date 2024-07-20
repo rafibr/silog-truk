@@ -21,8 +21,6 @@ const searchEtalaseKonstruksiList = [
 ];
 
 // date now
-const startDate = ref("2024-06-01");
-const endDate = ref("2024-06-30");
 const params = {
   provinsi: ["Kalimantan Selatan"],
   Jenis_Katalog: ["KATALOG LOKAL"],
@@ -39,11 +37,11 @@ const searchValuePenyediaProduk = ref("");
 const searchEtalaseKonstruksi = ref("");
 
 const handleSearchValuePenyediaProduk = () => {
-  // push search value to searchValuePenyediaProduk
-
+  if (searchEtalaseKonstruksi.value === "Semua") {
+    searchValuePenyediaProduk.value = "";
+    return;
+  }
   searchValuePenyediaProduk.value = searchEtalaseKonstruksi.value;
-
-  console.log(searchValuePenyediaProduk.value);
 };
 
 // get data purchasing
@@ -84,21 +82,7 @@ const getDataPenyediaProduk = async () => {
 
 <template>
   <div class="p-4 flex flex-col gap-4">
-    <VCard class="flex space-x-4 py-4 rounded-md shadow-lg">
-      <VLabel class="text-gray-700">Tanggal Awal</VLabel>
-      <input
-        type="date"
-        v-model="startDate"
-        class="mr-4 border border-gray-300 rounded-md p-2 shadow-sm bg-white"
-      />
-
-      <VLabel>Tanggal Akhir</VLabel>
-      <input
-        type="date"
-        v-model="endDate"
-        class="mr-4 border border-gray-300 rounded-md p-2 shadow-sm bg-white"
-      />
-
+    <VCard class="flex space-x-4 py-4 rounded-md shadow-lg text-center">
       <button
         @click="getDataPenyediaProduk"
         class="bg-cyan-500 hover:bg-cyan-400 text-white font-bold py-2 px-4 rounded"
