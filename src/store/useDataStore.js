@@ -9,15 +9,11 @@ export const useDataStore = defineStore({
 
     // get data purchasing
     async getEPurchasing(params) {
-      const server =
-        import.meta.env.VITE_APP_URL +
-        (import.meta.env.VITE_APP_SERVER_PORT
-          ? `:${import.meta.env.VITE_APP_SERVER_PORT}`
-          : "");
-
       const apiUrl = (apiCode) => {
-        return `${server}/api/queries/${apiCode}/results`;
+        return `${import.meta.env.VITE_APP_URL}/api/queries/${apiCode}/results`;
       };
+
+      console.log(apiUrl(157));
 
       return axios
         .post(apiUrl(157), {
@@ -39,14 +35,10 @@ export const useDataStore = defineStore({
 
     // get data produk tayang berdasarkan etalase
     async getProdukEtalase(params) {
-      const server =
-        import.meta.env.VITE_APP_URL +
-        (import.meta.env.VITE_APP_SERVER_PORT
-          ? `:${import.meta.env.VITE_APP_SERVER_PORT}`
-          : "");
+
 
       const apiUrl = (apiCode) => {
-        return `${server}/api/queries/${apiCode}/results`;
+        return `${import.meta.env.VITE_APP_URL}/api/queries/${apiCode}/results`;
       };
 
       return axios
@@ -68,14 +60,8 @@ export const useDataStore = defineStore({
     },
 
     async getPenyediaProduk(params) {
-      const server =
-        import.meta.env.VITE_APP_URL +
-        (import.meta.env.VITE_APP_SERVER_PORT
-          ? `:${import.meta.env.VITE_APP_SERVER_PORT}`
-          : "");
-
       const apiUrl = (apiCode) => {
-        return `${server}/api/queries/${apiCode}/results`;
+        return `${import.meta.env.VITE_APP_URL}/api/queries/${apiCode}/results`;
       };
 
       return axios
@@ -86,7 +72,7 @@ export const useDataStore = defineStore({
         .then((response) => {
           const responseData = response.data.query_result.data;
 
-          this.dataPenyediaProduk = responseData;
+          this.dataProdukEtalase = responseData;
 
           return responseData;
         })
