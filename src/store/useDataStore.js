@@ -2,7 +2,6 @@
 
 import axios from 'axios';
 import { defineStore } from 'pinia'
-import { useRoute } from 'vue-router';
 
 export const useDataStore = defineStore({
   id: 'data',
@@ -11,10 +10,8 @@ export const useDataStore = defineStore({
     // get data purchasing
     async getEPurchasing(params) {
       const apiUrl = (apiCode) => {
-        return `${import.meta.env.VITE_APP_URL}/api/queries/${apiCode}/results`;
+        return `${import.meta.env.VITE_API_URL}/api/queries/${apiCode}/results`;
       };
-
-      console.log(apiUrl(157));
 
       return axios
         .post(apiUrl(157), {
@@ -39,7 +36,7 @@ export const useDataStore = defineStore({
 
 
       const apiUrl = (apiCode) => {
-        return `${import.meta.env.VITE_APP_URL}/api/queries/${apiCode}/results`;
+        return `${import.meta.env.VITE_API_URL}/api/queries/${apiCode}/results`;
       };
 
       return axios
@@ -60,9 +57,10 @@ export const useDataStore = defineStore({
 
     },
 
+    // get data penyedia produk
     async getPenyediaProduk(params) {
       const apiUrl = (apiCode) => {
-        return `${import.meta.env.VITE_APP_URL}/api/queries/${apiCode}/results`;
+        return `${import.meta.env.VITE_API_URL}/api/queries/${apiCode}/results`;
       };
 
       return axios

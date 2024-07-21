@@ -1,10 +1,15 @@
 <script setup>
-import { ref, watch } from "vue";
-import { DataTable } from "@jobinsjp/vue3-datatable";
-import "@jobinsjp/vue3-datatable/dist/style.css";
+import { onMounted, ref, watch } from "vue";
 import { useDataStore } from "@/store/useDataStore";
+import { Chart, registerables } from "chart.js";
+import { BarChart, DoughnutChart, LineChart, PieChart } from "vue-chart-3";
+
+Chart.register(...registerables);
 
 const dataStore = useDataStore();
+
+const chartEtalaseRef = ref();
+const chartPaketRef = ref();
 
 const searchEtalaseKonstruksiList = [
   "Semua",
@@ -23,8 +28,10 @@ const searchEtalaseKonstruksiList = [
 const namaPaketList = ref([]);
 
 // date now
-const startDate = ref("2024-06-01");
-const endDate = ref("2024-06-30");
+const dateNow = new Date();
+const dateThisMonth = new Date(dateNow.getFullYear(), dateNow.getMonth(), 1);
+const startDate = ref(dateThisMonth.toISOString().split("T")[0]);
+const endDate = ref(dateNow.toISOString().split("T")[0]);
 const params = {
   provinsi: ["Kalimantan Selatan"],
   Jenis_Katalog: ["KATALOG LOKAL"],
@@ -43,13 +50,40 @@ const searchValuePurchasing = ref("");
 
 const searchEtalaseKonstruksi = ref("");
 const searchNamaPaket = ref("");
+const chartDataOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true,
+      position: "bottom",
+      fullSize: true,
+      onHover: function (event, legendItem) {
+        document.body.style.cursor = "pointer";
+      },
+      onLeave: function (event, legendItem) {
+        document.body.style.cursor = "default";
+      },
+    },
+  },
+});
+
+// data chart etalase
+const chartDataEtalase = ref();
+// data chart paket
+const chartDataPaket = ref();
 
 const handleSearchValuePurchasing = (searchType) => {
   // push search value to searchValuePurchasing
-
   if (searchType === "etalase") {
-    searchValuePurchasing.value = searchEtalaseKonstruksi.value;
-    searchNamaPaket.value = "";
+    // if semua
+    if (searchEtalaseKonstruksi.value === "Semua") {
+      searchValuePurchasing.value = "";
+      searchNamaPaket.value = "";
+    } else {
+      searchValuePurchasing.value = searchEtalaseKonstruksi.value;
+      searchNamaPaket.value = "";
+    }
   } else if (searchType === "paket") {
     searchValuePurchasing.value = searchNamaPaket.value;
     searchEtalaseKonstruksi.value = "";
@@ -66,7 +100,7 @@ const handleSearchValuePurchasing = (searchType) => {
 const getDataPurchasing = async () => {
   //flips the date if the start date is greater than the end date
   if (new Date(startDate.value) > new Date(endDate.value)) {
-    const temp = startDate.value;
+    let temp = startDate.value;
     startDate.value = endDate.value;
     endDate.value = temp;
   }
@@ -103,7 +137,6 @@ const getDataPurchasing = async () => {
     );
 
     itemsPurchasing.value = responseData.rows.map(function (x) {
-      // push nama paket to namaPaketList (unique)
       if (!namaPaketList.value.includes(x["Nama Paket"])) {
         namaPaketList.value.push(x["Nama Paket"]);
       }
@@ -115,9 +148,76 @@ const getDataPurchasing = async () => {
       );
     });
 
+    handleEtalaseChart(itemsPurchasing.value);
+    handlePaketChart(itemsPurchasing.value);
+
     isTablePurchasingLoading.value = false;
   });
 };
+
+// handle etalase chart
+const handleEtalaseChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const etalaseRows = items.map((x) => x.Etalase.slice(0, 25) + "...");
+
+  const etalaseRowsUnique = [...new Set(etalaseRows)];
+
+  // data count etalase
+  const dataCountEtalase = etalaseRowsUnique.map((x) => {
+    return {
+      labels: x,
+      data: etalaseRows.filter((y) => y === x).length,
+    };
+  });
+
+  chartDataEtalase.value = {
+    labels: ["Etalase Konstruksi"],
+    datasets: dataCountEtalase.map((x) => {
+      return {
+        label: x.labels,
+        data: [x.data],
+      };
+    }),
+  };
+
+  chartEtalaseRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+// handle paket chart
+const handlePaketChart = (items) => {
+  // Paket chart ----------------------------------------------
+  const paketRows = items.map((x) => x["Nama Paket"].slice(0, 25) + "...");
+
+  const paketRowsUnique = [...new Set(paketRows)];
+
+  // data count paket
+  const dataCountPaket = paketRowsUnique.map((x) => {
+    return {
+      labels: x,
+      data: paketRows.filter((y) => y === x).length,
+    };
+  });
+
+  chartDataPaket.value = {
+    labels: ["Paket"],
+    datasets: dataCountPaket.map((x) => {
+      return {
+        label: x.labels,
+        data: [x.data],
+      };
+    }),
+  };
+
+  chartPaketRef.value.update();
+  // End Paket chart ----------------------------------------------
+};
+
+// on mounted
+onMounted(() => {
+  chartEtalaseRef.value.update();
+  getDataPurchasing();
+});
 </script>
 
 <template>
@@ -145,38 +245,60 @@ const getDataPurchasing = async () => {
       </button>
     </VCard>
 
-    <VCard class="flex py-4 rounded-md shadow-lg">
-      <div class="px-4">
-        <!-- search etalase konstruksi -->
-        <VSelect
-          v-model="searchEtalaseKonstruksi"
-          :items="searchEtalaseKonstruksiList"
-          label="Etalase Konstruksi"
-          placeholder="Search"
-          :search="true"
-          @update:model-value="handleSearchValuePurchasing('etalase')"
-        />
+    <div class="p-4 bg-white rounded-md shadow-lg border border-gray-200">
+      <!-- search etalase konstruksi -->
+      <VSelect
+        v-model="searchEtalaseKonstruksi"
+        :items="searchEtalaseKonstruksiList"
+        label="Etalase Konstruksi"
+        placeholder="Search"
+        :search="true"
+        @update:model-value="handleSearchValuePurchasing('etalase')"
+      />
 
-        <!-- search nama paket -->
-        <VSelect
-          v-model="searchNamaPaket"
-          :items="namaPaketList"
-          label="Nama Paket"
-          placeholder="Search"
-          :search="true"
-          @update:model-value="handleSearchValuePurchasing('paket')"
-        />
+      <!-- search nama paket -->
+      <VSelect
+        v-model="searchNamaPaket"
+        :items="namaPaketList"
+        label="Nama Paket"
+        placeholder="Search"
+        :search="true"
+        @update:model-value="handleSearchValuePurchasing('paket')"
+      />
 
-        <EasyDataTable
-          :headers="headersDetilEPurchasing"
-          :items="itemsPurchasing"
-          :search-field="searchFieldPurchasing"
-          :search-value="searchValuePurchasing"
-          buttons-pagination
-          :rows-per-page="5"
-          :loading="isTablePurchasingLoading"
+      <EasyDataTable
+        :headers="headersDetilEPurchasing"
+        :items="itemsPurchasing"
+        :search-field="searchFieldPurchasing"
+        :search-value="searchValuePurchasing"
+        buttons-pagination
+        :rows-per-page="5"
+        :loading="isTablePurchasingLoading"
+      />
+    </div>
+
+    <div class="flex gap-4">
+      <div
+        class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full overflow-clip"
+      >
+        <h2 class="text-lg font-bold text-gray-700">Etalase Konstruksi</h2>
+        <BarChart
+          ref="chartEtalaseRef"
+          :chartData="chartDataEtalase"
+          :options="chartDataOptions"
         />
       </div>
-    </VCard>
+
+      <div
+        class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+      >
+        <h2 class="text-lg font-bold text-gray-700">Nama Paket</h2>
+        <BarChart
+          ref="chartPaketRef"
+          :chartData="chartDataPaket"
+          :options="chartDataOptions"
+        />
+      </div>
+    </div>
   </div>
 </template>

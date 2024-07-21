@@ -1,10 +1,41 @@
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { DataTable } from "@jobinsjp/vue3-datatable";
 import "@jobinsjp/vue3-datatable/dist/style.css";
 import { useDataStore } from "@/store/useDataStore";
+import { Chart, registerables } from "chart.js";
+import { BarChart, DoughnutChart, LineChart, PieChart } from "vue-chart-3";
+
+Chart.register(...registerables);
 
 const dataStore = useDataStore();
+
+const chartDataOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true,
+      position: "bottom",
+      fullSize: true,
+      onHover: function (event, legendItem) {
+        document.body.style.cursor = "pointer";
+      },
+      onLeave: function (event, legendItem) {
+        document.body.style.cursor = "default";
+      },
+    },
+  },
+});
+
+const chartProdukTKDNRef = ref();
+const chartProdukTKDN = ref();
+
+const chartProdukTanpaTKDNRef = ref();
+const chartProdukTanpaTKDN = ref();
+
+const chartProdukImportRef = ref();
+const chartProdukImport = ref();
 
 const searchEtalaseKonstruksiList = [
   "Semua",
@@ -75,9 +106,68 @@ const getDataProdukEtalase = async () => {
       );
     });
 
+    handleProdukTKDNChart(itemsProdukEtalase.value);
+    handleProdukTanpaTKDNChart(itemsProdukEtalase.value);
+    handleProdukImportChart(itemsProdukEtalase.value);
+
     isTableProdukEtalaseLoading.value = false;
   });
 };
+
+// handle produk TKDN chart
+const handleProdukTKDNChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataProdukTKDN = items.map((x) => {
+    return {
+      data: x["Produk Lokal TKDN"],
+    };
+  });
+
+  chartProdukTKDN.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataProdukTKDN.map((x) => x.data) }],
+  };
+  chartProdukTKDNRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+// handle produk Tanpa TKDN chart
+const handleProdukTanpaTKDNChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataProdukTanpaTKDN = items.map((x) => {
+    return {
+      data: x["Produk Lokal Tanpa TKDN"],
+    };
+  });
+
+  chartProdukTanpaTKDN.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataProdukTanpaTKDN.map((x) => x.data) }],
+  };
+  chartProdukTanpaTKDNRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+// handle Produk Impor chart
+const handleProdukImportChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataProdukImport = items.map((x) => {
+    return {
+      data: x["Produk Impor"],
+    };
+  });
+
+  chartProdukImport.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataProdukImport.map((x) => x.data) }],
+  };
+  chartProdukImportRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+onMounted(() => {
+  getDataProdukEtalase();
+});
 </script>
 
 <template>
@@ -91,7 +181,7 @@ const getDataProdukEtalase = async () => {
       </button>
     </VCard>
 
-    <VCard class="flex py-4 rounded-md shadow-lg">
+    <div class="p-4 bg-white rounded-md shadow-lg border border-gray-200">
       <div class="px-4">
         <!-- search etalase konstruksi -->
         <VSelect
@@ -113,6 +203,42 @@ const getDataProdukEtalase = async () => {
           :loading="isTableProdukEtalaseLoading"
         />
       </div>
-    </VCard>
+    </div>
+
+    <!-- chart produk TKDN -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Lokal TKDN</h2>
+      <PieChart
+        ref="chartProdukTKDNRef"
+        :chartData="chartProdukTKDN"
+        :options="chartDataOptions"
+      />
+    </div>
+
+    <!-- chart produk tanpa TKDN -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Lokal Tanpa TKDN</h2>
+      <PieChart
+        ref="chartProdukTanpaTKDNRef"
+        :chartData="chartProdukTanpaTKDN"
+        :options="chartDataOptions"
+      />
+    </div>
+
+    <!-- chart Produk Impor -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Impor</h2>
+      <PieChart
+        ref="chartProdukImportRef"
+        :chartData="chartProdukImport"
+        :options="chartDataOptions"
+      />
+    </div>
   </div>
 </template>

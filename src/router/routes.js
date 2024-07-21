@@ -29,6 +29,13 @@ const routes = [
     auth: true,
     icon: "mdi-account-group-outline",
   },
+  {
+    name: "Data Dukung",
+    path: "/data-dukung",
+    component: () => import("@/views/DataDukung.vue"),
+    auth: true,
+    icon: "mdi-database",
+  },
 ];
 
 export default routes;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import routes from "./router/routes";
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "./store/useAuthStore";
@@ -104,6 +104,8 @@ const navigation = ref(
         class="shadow-lg"
         width="250"
         floating
+        rail
+        expand-on-hover
       >
         <div class="h-full bg-gradient-to-b from-green-500 to-blue-400">
           <div class="flex flex-row items-center h-14 gap-2 px-2">

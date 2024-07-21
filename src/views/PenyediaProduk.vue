@@ -1,10 +1,42 @@
 <script setup>
-import { ref, watch } from "vue";
-import { DataTable } from "@jobinsjp/vue3-datatable";
-import "@jobinsjp/vue3-datatable/dist/style.css";
+import { onMounted, ref, watch } from "vue";
 import { useDataStore } from "@/store/useDataStore";
+import { Chart, registerables } from "chart.js";
+import { BarChart, DoughnutChart, LineChart, PieChart } from "vue-chart-3";
+
+Chart.register(...registerables);
 
 const dataStore = useDataStore();
+
+const chartDataOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true,
+      position: "bottom",
+      fullSize: true,
+      onHover: function (event, legendItem) {
+        document.body.style.cursor = "pointer";
+      },
+      onLeave: function (event, legendItem) {
+        document.body.style.cursor = "default";
+      },
+    },
+  },
+});
+
+const chartMikroRef = ref();
+const chartMikro = ref();
+
+const chartKecilRef = ref();
+const chartKecil = ref();
+
+const chartMenengahRef = ref();
+const chartMenengah = ref();
+
+const chartNonUKMRef = ref();
+const chartNonUKM = ref();
 
 const searchEtalaseKonstruksiList = [
   "Semua",
@@ -75,9 +107,86 @@ const getDataPenyediaProduk = async () => {
       );
     });
 
+    handleMikroChart(itemsPenyediaProduk.value);
+    handleKecilChart(itemsPenyediaProduk.value);
+    handleMenengahChart(itemsPenyediaProduk.value);
+    handleNonUKMChart(itemsPenyediaProduk.value);
+
     isTablePenyediaProdukLoading.value = false;
   });
 };
+
+// handle mikro chart
+const handleMikroChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataMikro = items.map((x) => {
+    return {
+      data: x["Usaha Mikro"],
+    };
+  });
+
+  chartMikro.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataMikro.map((x) => x.data) }],
+  };
+  chartMikroRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+// handle kecil chart
+const handleKecilChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataKecil = items.map((x) => {
+    return {
+      data: x["Usaha Kecil"],
+    };
+  });
+
+  chartKecil.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataKecil.map((x) => x.data) }],
+  };
+  chartKecilRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+// handle menengah chart
+const handleMenengahChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataMenengah = items.map((x) => {
+    return {
+      data: x["Usaha Menengah"],
+    };
+  });
+
+  chartMenengah.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataMenengah.map((x) => x.data) }],
+  };
+  chartMenengahRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+// handle non UKM chart
+const handleNonUKMChart = (items) => {
+  // Etalase chart ----------------------------------------------
+  const dataNonUKM = items.map((x) => {
+    return {
+      data: x["Non-UKM"],
+    };
+  });
+
+  chartNonUKM.value = {
+    labels: items.map((x) => x.Etalase.substring(0, 25) + "..."),
+    datasets: [{ data: dataNonUKM.map((x) => x.data) }],
+  };
+  chartNonUKMRef.value.update();
+  // End Etalase chart ----------------------------------------------
+};
+
+onMounted(() => {
+  getDataPenyediaProduk();
+});
 </script>
 
 <template>
@@ -91,7 +200,7 @@ const getDataPenyediaProduk = async () => {
       </button>
     </VCard>
 
-    <VCard class="flex py-4 rounded-md shadow-lg">
+    <div class="p-4 bg-white rounded-md shadow-lg border border-gray-200">
       <div class="px-4">
         <!-- search etalase konstruksi -->
         <VSelect
@@ -113,6 +222,54 @@ const getDataPenyediaProduk = async () => {
           :loading="isTablePenyediaProdukLoading"
         />
       </div>
-    </VCard>
+    </div>
+
+    <!-- chart Produk mikro -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Mikro</h2>
+      <PieChart
+        ref="chartMikroRef"
+        :chartData="chartMikro"
+        :options="chartDataOptions"
+      />
+    </div>
+
+    <!-- chart Produk kecil -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Kecil</h2>
+      <PieChart
+        ref="chartKecilRef"
+        :chartData="chartKecil"
+        :options="chartDataOptions"
+      />
+    </div>
+
+    <!-- chart Produk menengah -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Menengah</h2>
+      <PieChart
+        ref="chartMenengahRef"
+        :chartData="chartMenengah"
+        :options="chartDataOptions"
+      />
+    </div>
+
+    <!-- chart Produk non UKM -->
+    <div
+      class="p-4 bg-white rounded-md shadow-lg border border-gray-200 w-full"
+    >
+      <h2 class="text-lg font-bold text-gray-700">Produk Non UKM</h2>
+      <PieChart
+        ref="chartNonUKMRef"
+        :chartData="chartNonUKM"
+        :options="chartDataOptions"
+      />
+    </div>
   </div>
 </template>
