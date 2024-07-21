@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const fs = require('fs');
-var serveStatic = require('serve-static');
+import serverless from "serverless-http";
 
 const app = express();
 const port = process.env.SERVER_PORT || 3000;
@@ -68,6 +68,8 @@ app.get('/', (req, res) => {
   console.log('GET /, ', path.join(__dirname, 'dist/index.html'));
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
+
+export const handler = serverless(api);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
